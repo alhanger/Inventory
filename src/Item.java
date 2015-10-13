@@ -3,10 +3,6 @@
  */
 public class Item {
     String itemName;
-    int quantity;
-
-    public Item(String text) {
-        itemName = text;
-        quantity = 1;
-    }
+    int quantity = 1;
+    String category;
 }

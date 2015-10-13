@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -7,7 +6,7 @@ import java.util.Scanner;
  * Created by alhanger on 10/12/15.
  */
 public class Inventory {
-    public static void main (String[] args) {
+    public static void main (String[] args) throws Exception {
 
         HashMap<String, String> users = new HashMap<>();
         ArrayList<Item> invList = new ArrayList();
@@ -29,12 +28,33 @@ public class Inventory {
         }
     }
 
-    static void runInventory(ArrayList<Item> invList, Scanner scanner) {
+    static Item createItem(String itemCategory) throws Exception {
+        if (itemCategory.equals("instrument")) {
+            return new Instrument();
+        }
+        else if (itemCategory.equals("equipment")) {
+            return new Equipment();
+        }
+        else if (itemCategory.equals("tool")) {
+            return new Tool();
+        }
+        else if (itemCategory.equals("music book")) {
+            return new MusicBook();
+        }
+        else if (itemCategory.equals("merchandise")) {
+            return new Merchandise();
+        }
+        else {
+            throw new Exception("That is an invalid item.");
+            }
+        }
+
+    static void runInventory(ArrayList<Item> invList, Scanner scanner) throws Exception {
         while (true) {
             int itemNum = 1;
             System.out.println("INVENTORY:");
             for (Item stuff : invList) {
-                System.out.println(itemNum + ". " + stuff.itemName + "[" + stuff.quantity + "]");
+                System.out.println(String.format("%d. [%s] %s (%d)", itemNum, stuff.category, stuff.itemName, stuff.quantity));
                 itemNum++;
             }
 
@@ -47,18 +67,30 @@ public class Inventory {
             int optionNum = Integer.valueOf(option);
 
             if (optionNum == 1) {
-                System.out.println("What item would you like to add?");
+                System.out.println("What kind of item would you like to add?");
+                System.out.println("Select from the following options:");
+                System.out.println("-----Instrument");
+                System.out.println("-----Equipment");
+                System.out.println("-----Tool");
+                System.out.println("-----Music Book");
+                System.out.println("-----Merchandise");
                 String newItem = scanner.nextLine();
-                Item i = new Item(newItem);
-                invList.add(i);
-                System.out.println("Added to the Inventory: " + newItem);
-            } else if (optionNum == 2) {
+                newItem = newItem.toLowerCase();
+                Item newThing = createItem(newItem);
+                System.out.println(String.format("What %s would you like to add?", newThing.category));
+                String newInput = scanner.nextLine();
+                newThing.itemName = newInput;
+                invList.add(newThing);
+                System.out.println(String.format("Added to the Inventory: %s [%s]", newInput, newThing.category));
+            }
+            else if (optionNum == 2) {
                 System.out.println("Which item would you like to remove? Please select by the item number.");
                 String itemRemove = scanner.nextLine();
                 int selectNum = Integer.valueOf(itemRemove);
                 Item p = invList.get(selectNum - 1);
                 invList.remove(p);
-            } else if (optionNum == 3) {
+            }
+            else if (optionNum == 3) {
                 System.out.println("Which item would you like to update?");
                 String f = scanner.nextLine();
                 int pos = 0;
@@ -77,3 +109,4 @@ public class Inventory {
         }
     }
 }
+
